@@ -132,7 +132,10 @@ its class name ends with the string <code>Beta</code>.
        annotation (Documentation(info="<html>
    <p>
    Version 3.0.0 is a major new release. The option to model electrochromic windows has
-   been added.
+   been added. The models in <code>Buildings.Fluid.Movers</code> have been refactored
+   to make their implementation clearer.
+   Various models in particular in the <code>Buildings.Electrical</code>
+   package were reformulated to comply with the Modelica Language Definition.
    </p>
    <!-- New libraries -->
    <p>
@@ -168,6 +171,22 @@ its class name ends with the string <code>Beta</code>.
                           into the direction that is perpendicular to the azimuth of a surface.
        </td>
        </tr>
+   <tr><td colspan=\"2\"><b>Buildings.Electrical</b>
+       </td>
+   </tr>
+   <tr><td valign=\"top\">Buildings.Electrical.AC.ThreePhasesUnbalanced.Interfaces.Adapter3to3<br/>
+                        Buildings.Electrical.AC.ThreePhasesUnbalanced.Interfaces.Connection3to3Ground_n<br/>
+                        Buildings.Electrical.AC.ThreePhasesUnbalanced.Interfaces.Connection3to3Ground_p
+       </td>
+       <td valign=\"top\">Adapters for unbalanced three phase systems which are required because
+                        the previous formulation used connect statements that violate the Modelica
+                        Language Definition. This change was required to enable pedantic model check and translation
+                        in Dymola 2016 FD01.
+                          This is for
+                          <a href=\"https://github.com/iea-annex60/modelica-annex60/issues/426\">#426</a>.
+       </td>
+       </tr>
+
    <tr><td colspan=\"2\"><b>Buildings.Fluid.Chillers</b>
        </td>
    </tr>
@@ -235,6 +254,14 @@ its class name ends with the string <code>Beta</code>.
                        parameter <code>l</code> from <code>0</code> to <code>0.0001</code>.
                        This is the same value as is used for the two-way valves,
                        and avoids an assertion that would be triggered if <code>l=0</code>.
+    </td>
+    </tr>
+
+    <tr><td valign=\"top\">Buildings.Fluid.HeatExchangers.DryEffectivenessNTU
+    </td>
+    <td valign=\"top\">Reformulated model to allow translation in OpenModelica.
+                       This is for issue
+                        <a href=\"https://github.com/lbl-srg/modelica-buildings/issues/490\">#490</a>.
     </td>
    </tr>
    
@@ -404,6 +431,18 @@ its class name ends with the string <code>Beta</code>.
    </tr>
    <tr><td valign=\"top\">Buildings.Fluid.Movers.FlowControlled_dp<br/>
                           Buildings.Fluid.Movers.FlowControlled_m_flow<br/>
+                          Buildings.Fluid.Movers.FlowControlled_Nrpm<br/>
+                          Buildings.Fluid.Movers.FlowControlled_y
+     </td>
+     <td valign=\"top\">Removed the public variable <code>r_N</code>.
+                        This is for
+                        <a href=\"https://github.com/iea-annex60/modelica-annex60/issues/417\">Annex 60 issue 417</a>.                        For Dymola, the conversion script will remove
+                        For Dymola, the conversion script removes
+                        assignments of <code>r_N(start)</code>.
+     </td>
+   </tr>
+   <tr><td valign=\"top\">Buildings.Fluid.Movers.FlowControlled_dp<br/>
+                          Buildings.Fluid.Movers.FlowControlled_m_flow<br/>
                           Buildings.Fluid.Movers.Data.FlowControlled
      </td>
      <td valign=\"top\">Removed the performance record <code>power</code> and the
@@ -417,11 +456,21 @@ its class name ends with the string <code>Beta</code>.
                         Hence, users should use the efficiency data for this model.
                         The record and parameter was moved to
                         <code>Buildings.Fluid.Movers.Data.SpeedControlled_y</code>
-                        as it makes sense to use it for the movers
+                        as they are also used for
                         <code>Buildings.Fluid.Movers.FlowControlled_Nrpm</code>
                         and  <code>Buildings.Fluid.Movers.FlowControlled_y</code>.
      </td>
    </tr>
+
+   <tr><td valign=\"top\">Buildings.Fluid.Movers.Data.SpeedControlled_Nrpm
+     </td>
+     <td valign=\"top\">Changed the parameter <code>N_nominal</code> to <code>speed_rpm_nominal</code>.
+                        This is for
+                        <a href=\"https://github.com/iea-annex60/modelica-annex60/issues/396\">Annex 60 issue 396</a>.
+                        For Dymola, the conversion script updates this parameter.
+     </td>
+   </tr>
+
    <tr><td valign=\"top\">Buildings.Fluid.Interfaces.PartialTwoPort
      </td>
      <td valign=\"top\">Renamed the protected parameters
@@ -583,7 +632,7 @@ its class name ends with the string <code>Beta</code>.
    <tr><td valign=\"top\">Buildings.Utilities.IO.Python27.exchange
        </td>
        <td valign=\"top\">Updated Python implementation to allow compiling code
-                          in 64 bit. Previously, on Linux a segmentation fault
+                          on 64 bit Linux. Previously, on Linux a segmentation fault
                           occurred during run-time if 64 bit code rather than
                           32 bit code was generated. This is now corrected.
                           This closes
